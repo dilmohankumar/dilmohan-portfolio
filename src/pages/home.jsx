@@ -1,586 +1,369 @@
 import { useState, useEffect, useRef } from "react";
 
-const NAV_LINKS = ["About", "Skills", "Work", "Contact"];
+const NAV_LINKS = ["About", "Projects", "Skills", "Contact"];
 
-const SKILLS = {
-  "Digital Marketing": [
-    "Social Media Marketing",
-    "Meta Ads (FB & IG)",
-    "PPC Advertising",
-    "Content Marketing",
-    "Lead Generation",
-    "Campaign Optimization",
-    "Audience Targeting",
-    "Marketing Analytics",
-  ],
-  "Creative": [
-    "Graphic Designing",
-    "Video Editing",
-    "Reel Creation",
-    "AI Video Creation",
-    "Canva Design",
-    "Ad Creatives",
-    "Copywriting",
-    "Content Writing",
-  ],
-  "Tools & Tech": [
-    "Meta Ads Manager",
-    "Canva",
-    "ChatGPT & AI Tools",
-    "Facebook Business Suite",
-    "Instagram Marketing",
-    "Basic SEO",
-    "Google Workspace",
-    "Microsoft Office",
-  ],
-};
+const SKILLS = [
+  "JavaScript", "React.js", "Node.js", "MongoDB", "Express.js",
+  "Next.js", "Tailwind CSS", "HTML", "CSS", "Material UI",
+  "Redux (RTK)", "Version Control", "Responsive Web Design",
+];
 
 const PROJECTS = [
   {
-    title: "Bakery Brand Campaign",
-    category: "Food & Beverage",
-    tag: "Meta Ads",
-    color: "#ff6b35",
-    desc: "End-to-end promotional campaigns for a bakery specializing in Black Forest cakes — reels, creatives, and paid ads.",
-    metrics: [{ label: "Reach", val: "50K+" }, { label: "Engagement↑", val: "3×" }],
-    icon: "🎂",
+    name: "WhoisDataCenter Web Platform",
+    desc: "A full-featured web platform built with Next.js, Bootstrap, and Redux. Features responsive UI, REST API integration, and efficient state management.",
+    tech: ["Next.js", "Bootstrap", "Redux"],
+    emoji: "🌐",
   },
   {
-    title: "Restaurant Promotion",
-    category: "F&B / Hospitality",
-    tag: "SMM",
-    color: "#6c63ff",
-    desc: "Social media management and reel production for buffet and cheese burst campaigns — driving footfall and online orders.",
-    metrics: [{ label: "Followers↑", val: "2K" }, { label: "Orders↑", val: "40%" }],
-    icon: "🍕",
-  },
-  {
-    title: "Real Estate Leads",
-    category: "Real Estate",
-    tag: "Lead Gen",
-    color: "#00c896",
-    desc: "Meta lead generation campaigns with targeted audience segmentation, ad copy, and creative for real estate developers.",
-    metrics: [{ label: "CPL", val: "↓35%" }, { label: "Leads", val: "200+" }],
-    icon: "🏡",
-  },
-  {
-    title: "Digital Marketing Course",
-    category: "EdTech",
-    tag: "Content",
-    color: "#f7b731",
-    desc: "Full social media campaign to promote a digital marketing course — reels, stories, creatives and ad strategy.",
-    metrics: [{ label: "Enrollments", val: "+60%" }, { label: "CTR", val: "4.2%" }],
-    icon: "📚",
+    name: "Whois Data Center App",
+    desc: "Full-stack MERN application with Redux for state management, REST APIs, MongoDB Atlas for cloud database, and production deployment.",
+    tech: ["MongoDB", "Express", "React", "Node.js"],
+    emoji: "⚡",
   },
 ];
 
-const TESTIMONIALS = [
+const EXPERIENCE = [
   {
-    text: "Danish has an incredible eye for what works on social media. Our bakery page blew up after he took over!",
-    name: "Priya S.",
-    role: "Bakery Owner",
+    company: "AllHeartWeb",
+    role: "Frontend & Backend Developer",
+    duration: "6 Months",
+    icon: "💼",
   },
   {
-    text: "The Meta Ads campaigns he ran brought in quality leads at almost half the cost we were spending before.",
-    name: "Rohit M.",
-    role: "Real Estate Developer",
-  },
-  {
-    text: "Creative, punctual, and genuinely invested in our brand growth. Would recommend him to anyone.",
-    name: "Aman K.",
-    role: "Restaurant Manager",
+    company: "EunixTech",
+    role: "Web Development & UI Design",
+    duration: "3 Months",
+    icon: "🛠️",
   },
 ];
 
-function useInView(threshold = 0.15) {
-  const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { threshold }
-    );
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return [ref, visible];
-}
-
-function FadeIn({ children, delay = 0, className = "" }) {
-  const [ref, visible] = useInView();
-  return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(32px)",
-        transition: `opacity 0.7s ease ${delay}s, transform 0.7s ease ${delay}s`,
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-// Marquee ticker
-function Ticker() {
-  const items = ["Social Media Marketing", "Meta Ads", "Content Creation", "Lead Generation", "Video Editing", "Branding", "Reels", "AI Content", "Canva Design", "PPC Ads"];
-  const doubled = [...items, ...items];
-  return (
-    <div className="overflow-hidden border-y border-gray-800 py-4 bg-black relative">
-      <div className="flex gap-12 whitespace-nowrap animate-marquee">
-        {doubled.map((item, i) => (
-          <span key={i} className="flex items-center gap-4 text-sm font-medium tracking-widest text-gray-400 uppercase shrink-0">
-            <span className="text-orange-400 text-lg">✦</span> {item}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
+const CERTS = [
+  "JavaScript Programming with React, Node & MongoDB Specialization",
+  "Web Development in Node.js",
+  "Frontend Web Development with React",
+];
 
 export default function Portfolio() {
+  const [dark, setDark] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [activeSkill, setActiveSkill] = useState("Digital Marketing");
-  const [tIdx, setTIdx] = useState(0);
+  const [activeSection, setActiveSection] = useState("About");
+  const [typed, setTyped] = useState("");
+  const [skillVisible, setSkillVisible] = useState(false);
+  const skillRef = useRef(null);
 
+  // Typewriter effect
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", fn);
-    return () => window.removeEventListener("scroll", fn);
+    const words = ["MERN Stack Developer", "React Enthusiast", "Full Stack Builder"];
+    let wi = 0, ci = 0, deleting = false;
+    const tick = () => {
+      const word = words[wi];
+      if (!deleting) {
+        setTyped(word.slice(0, ci + 1));
+        ci++;
+        if (ci === word.length) { deleting = true; setTimeout(tick, 1200); return; }
+      } else {
+        setTyped(word.slice(0, ci - 1));
+        ci--;
+        if (ci === 0) { deleting = false; wi = (wi + 1) % words.length; }
+      }
+      setTimeout(tick, deleting ? 40 : 80);
+    };
+    const t = setTimeout(tick, 500);
+    return () => clearTimeout(t);
   }, []);
 
+  // Intersection observer for skills
   useEffect(() => {
-    const t = setInterval(() => setTIdx(i => (i + 1) % TESTIMONIALS.length), 4000);
-    return () => clearInterval(t);
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setSkillVisible(true); }, { threshold: 0.2 });
+    if (skillRef.current) obs.observe(skillRef.current);
+    return () => obs.disconnect();
   }, []);
+
+  // Active section on scroll
+  useEffect(() => {
+    const handler = () => {
+      const sections = ["about", "projects", "skills", "contact"];
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= 100 && rect.bottom > 100) {
+          setActiveSection(id.charAt(0).toUpperCase() + id.slice(1));
+          break;
+        }
+      }
+    };
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
+
+  const bg = dark ? "bg-[#0d0d0d]" : "bg-[#f4f1eb]";
+  const text = dark ? "text-[#e8e0d0]" : "text-[#1a1a1a]";
+  const card = dark ? "bg-[#181818] border-[#2a2a2a]" : "bg-white border-[#e0dbd0]";
+  const accent = "#00c896";
+  const muted = dark ? "text-[#888]" : "text-[#666]";
+  const navBg = dark ? "bg-[#0d0d0d]/90" : "bg-[#f4f1eb]/90";
 
   const scrollTo = (id) => {
+    document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
     setMenuOpen(false);
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <div className="bg-black text-white min-h-screen font-sans antialiased">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
-        * { font-family: 'DM Sans', sans-serif; box-sizing: border-box; }
-        h1,h2,h3,.display { font-family: 'Syne', sans-serif; }
-        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        .animate-marquee { animation: marquee 28s linear infinite; }
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-        .float { animation: float 4s ease-in-out infinite; }
-        @keyframes ping-slow { 0%{transform:scale(1);opacity:1}70%{transform:scale(2);opacity:0}100%{transform:scale(2);opacity:0} }
-        .ping-slow { animation: ping-slow 2s cubic-bezier(0,0,0.2,1) infinite; }
-        ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #f97316; border-radius: 4px; }
-        .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(249,115,22,0.15); }
-        .skill-pill { transition: all 0.25s ease; }
-        .skill-pill:hover { background: #f97316; color: #000; transform: scale(1.05); }
-        .nav-link { position: relative; }
-        .nav-link::after { content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px; background:#f97316; transition: width 0.3s ease; }
-        .nav-link:hover::after { width:100%; }
-      `}</style>
-
+    <div className={`${bg} ${text} min-h-screen font-mono transition-colors duration-500`}>
       {/* NAV */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-black/90 backdrop-blur-md border-b border-gray-800" : ""}`}>
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <span className="text-xl font-bold display tracking-tight">
-            <span className="text-orange-400">D</span>anish
+      <nav className={`fixed top-0 left-0 right-0 z-50 ${navBg} backdrop-blur border-b ${dark ? "border-[#1e1e1e]" : "border-[#ddd]"}`}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+          <span className="text-xl font-bold tracking-widest" style={{ color: accent }}>
+            DK<span className={dark ? "text-white" : "text-black"}>.</span>
           </span>
-          {/* Desktop */}
+          {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-8">
-            {NAV_LINKS.map(l => (
-              <button key={l} onClick={() => scrollTo(l.toLowerCase())} className="nav-link text-sm text-gray-300 hover:text-white transition-colors capitalize">
+            {NAV_LINKS.map((l) => (
+              <button
+                key={l}
+                onClick={() => scrollTo(l)}
+                className={`text-sm tracking-widest uppercase transition-colors hover:text-[#00c896] ${activeSection === l ? "text-[#00c896]" : muted}`}
+              >
                 {l}
               </button>
             ))}
-            <button onClick={() => scrollTo("contact")} className="bg-orange-500 hover:bg-orange-400 text-black text-sm font-semibold px-5 py-2 rounded-full transition-colors">
-              Hire Me
+            <button
+              onClick={() => setDark(!dark)}
+              className="ml-4 w-12 h-6 rounded-full relative transition-colors duration-300"
+              style={{ backgroundColor: dark ? "#00c896" : "#ccc" }}
+            >
+              <span
+                className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-300"
+                style={{ left: dark ? "26px" : "2px" }}
+              />
             </button>
           </div>
-          {/* Mobile hamburger */}
-          <button className="md:hidden text-white" onClick={() => setMenuOpen(!menuOpen)}>
-            <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
-              {menuOpen
-                ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
-                : <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>}
-            </svg>
-          </button>
+          {/* Mobile */}
+          <div className="flex md:hidden items-center gap-3">
+            <button onClick={() => setDark(!dark)} className="w-10 h-5 rounded-full relative" style={{ backgroundColor: dark ? "#00c896" : "#ccc" }}>
+              <span className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-300" style={{ left: dark ? "22px" : "2px" }} />
+            </button>
+            <button onClick={() => setMenuOpen(!menuOpen)} className={`${muted} hover:text-[#00c896] p-1`}>
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {menuOpen ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /> : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />}
+              </svg>
+            </button>
+          </div>
         </div>
-        {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden bg-black border-t border-gray-800 px-6 py-6 flex flex-col gap-5">
-            {NAV_LINKS.map(l => (
-              <button key={l} onClick={() => scrollTo(l.toLowerCase())} className="text-gray-300 hover:text-orange-400 text-left text-lg transition-colors">{l}</button>
+          <div className={`md:hidden ${dark ? "bg-[#111]" : "bg-white"} border-t ${dark ? "border-[#1e1e1e]" : "border-[#eee]"} px-6 py-4 flex flex-col gap-4`}>
+            {NAV_LINKS.map((l) => (
+              <button key={l} onClick={() => scrollTo(l)} className={`text-left text-sm tracking-widest uppercase ${activeSection === l ? "text-[#00c896]" : muted}`}>{l}</button>
             ))}
-            <button onClick={() => scrollTo("contact")} className="bg-orange-500 text-black font-semibold py-3 rounded-full mt-2">Hire Me</button>
           </div>
         )}
       </nav>
 
       {/* HERO */}
-      <section id="about" className="min-h-screen flex items-center pt-24 pb-16 px-6">
-        <div className="max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            {/* Available badge */}
-            <div className="inline-flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-full px-4 py-2 mb-8">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="ping-slow absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-400"></span>
-              </span>
-              <span className="text-xs text-gray-300 tracking-widest uppercase">Available for Work</span>
-            </div>
-
-            <p className="text-orange-400 text-sm font-medium tracking-widest uppercase mb-3">Digital Marketing Executive · Chandigarh</p>
-            <h1 className="display text-5xl sm:text-6xl md:text-7xl font-extrabold leading-none mb-6">
-              Hello,<br/>I'm <span className="text-orange-400">Danish</span>
-            </h1>
-            <p className="text-gray-400 text-lg leading-relaxed mb-8 max-w-md">
-              Creative & result-driven marketer with expertise in <strong className="text-white">Meta Ads</strong>, social media growth, and AI-powered content — helping brands tell their story and scale.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <button onClick={() => scrollTo("work")} className="bg-orange-500 hover:bg-orange-400 text-black font-semibold px-7 py-3 rounded-full transition-all hover:scale-105">
-                View My Work
-              </button>
-              <button onClick={() => scrollTo("contact")} className="border border-gray-600 hover:border-orange-400 hover:text-orange-400 text-gray-300 font-medium px-7 py-3 rounded-full transition-all">
-                Let's Talk
-              </button>
-            </div>
-
-            {/* Socials */}
-            <div className="flex gap-4 mt-10">
-              {[
-                { label: "LinkedIn", icon: "in" },
-                { label: "Instagram", icon: "ig" },
-                { label: "Email", icon: "✉" },
-              ].map(s => (
-                <div key={s.label} className="w-10 h-10 rounded-full border border-gray-700 hover:border-orange-400 hover:text-orange-400 flex items-center justify-center text-gray-400 text-xs font-bold cursor-pointer transition-all hover:scale-110">
-                  {s.icon}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right visual */}
-          <div className="flex justify-center md:justify-end">
-            <div className="relative">
-              {/* Decorative rings */}
-              <div className="absolute inset-0 rounded-3xl border border-orange-400/20 scale-110"></div>
-              <div className="absolute inset-0 rounded-3xl border border-orange-400/10 scale-125"></div>
-
-              <div className="w-72 h-80 sm:w-80 sm:h-96 rounded-3xl bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 flex flex-col items-center justify-center relative overflow-hidden float">
-                {/* BG decoration */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl"></div>
-
-                {/* Avatar placeholder */}
-                <div className="w-28 h-28 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-5xl font-extrabold text-black display mb-6 shadow-lg shadow-orange-500/30">
-                  D
-                </div>
-                <p className="text-white font-semibold text-lg display">Danish</p>
-                <p className="text-gray-400 text-sm mt-1">Digital Marketing Executive</p>
-
-                {/* Floating stats */}
-                <div className="absolute top-5 -left-8 bg-black border border-gray-700 rounded-xl px-4 py-2 shadow-xl">
-                  <p className="text-orange-400 font-bold text-lg display">50K+</p>
-                  <p className="text-gray-400 text-xs">Reach Generated</p>
-                </div>
-                <div className="absolute bottom-8 -right-8 bg-black border border-gray-700 rounded-xl px-4 py-2 shadow-xl">
-                  <p className="text-green-400 font-bold text-lg display">200+</p>
-                  <p className="text-gray-400 text-xs">Leads Driven</p>
-                </div>
+      <section id="about" className="min-h-screen flex items-center pt-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full py-20">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+            {/* Text */}
+            <div className="flex-1 text-center lg:text-left">
+              <p className={`text-sm tracking-[0.3em] uppercase ${muted} mb-4`}>👋 Hello, World</p>
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight mb-4">
+                Dilmohan<br />
+                <span style={{ color: accent }}>Kumar</span>
+              </h1>
+              <div className="h-8 mb-6">
+                <span className="text-lg sm:text-xl" style={{ color: accent }}>{typed}</span>
+                <span className="animate-pulse" style={{ color: accent }}>|</span>
+              </div>
+              <p className={`${muted} text-sm sm:text-base max-w-lg mx-auto lg:mx-0 mb-8 leading-relaxed`}>
+                Dedicated MERN stack developer crafting innovative, user-friendly web applications. Excited to join collaborative teams and continuously learn.
+              </p>
+              <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+                <a
+                  href="https://github.com/dilmohankumar?tab=repositories"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-6 py-3 rounded-sm text-sm tracking-widest font-bold border-2 transition-all hover:scale-105"
+                  style={{ borderColor: accent, color: accent }}
+                >
+                  GitHub →
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/dilmohan-kumar-b230b921b/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-6 py-3 rounded-sm text-sm tracking-widest font-bold transition-all hover:scale-105"
+                  style={{ backgroundColor: accent, color: "#000" }}
+                >
+                  LinkedIn
+                </a>
+                <button
+                  onClick={() => scrollTo("Contact")}
+                  className={`px-6 py-3 rounded-sm text-sm tracking-widest border ${dark ? "border-[#333] hover:border-[#555]" : "border-[#ccc] hover:border-[#999]"} transition-all hover:scale-105`}
+                >
+                  Contact Me
+                </button>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* TICKER */}
-      <Ticker />
-
-      {/* STATS */}
-      <section className="py-16 px-6 border-b border-gray-800">
-        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            { val: "2+", label: "Years Experience" },
-            { val: "10+", label: "Clients Served" },
-            { val: "200+", label: "Leads Generated" },
-            { val: "4", label: "Industries" },
-          ].map((s, i) => (
-            <FadeIn key={s.label} delay={i * 0.1}>
-              <div className="text-center p-6 rounded-2xl bg-gray-900 border border-gray-800 hover:border-orange-400/50 transition-colors">
-                <p className="text-3xl sm:text-4xl font-extrabold text-orange-400 display">{s.val}</p>
-                <p className="text-gray-400 text-sm mt-2">{s.label}</p>
-              </div>
-            </FadeIn>
-          ))}
-        </div>
-      </section>
-
-      {/* SKILLS */}
-      <section id="skills" className="py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <FadeIn>
-            <p className="text-orange-400 text-sm font-medium tracking-widest uppercase mb-3 text-center">Expertise</p>
-            <h2 className="display text-4xl sm:text-5xl font-extrabold text-center mb-4">My Skill Set</h2>
-            <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">A blend of creative and analytical skills to drive real results for your brand.</p>
-          </FadeIn>
-
-          {/* Tabs */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {Object.keys(SKILLS).map(tab => (
-              <button
-                key={tab}
-                onClick={() => setActiveSkill(tab)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${activeSkill === tab ? "bg-orange-500 text-black" : "border border-gray-700 text-gray-400 hover:border-orange-400 hover:text-orange-400"}`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex flex-wrap gap-3 justify-center">
-            {SKILLS[activeSkill].map((sk, i) => (
-              <FadeIn key={sk} delay={i * 0.05}>
-                <span className="skill-pill px-5 py-2.5 rounded-full border border-gray-700 text-gray-300 text-sm cursor-default">
-                  {sk}
-                </span>
-              </FadeIn>
-            ))}
-          </div>
-
-          {/* What I do */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-20">
-            {[
-              { icon: "📣", title: "Paid Advertising", desc: "High-converting Meta Ads campaigns tailored to your goals and audience." },
-              { icon: "🎬", title: "Content Creation", desc: "Reels, creatives, and AI-powered videos that stop the scroll." },
-              { icon: "📊", title: "Strategy & Analytics", desc: "Data-driven decisions to optimize campaigns and maximize ROI." },
-              { icon: "🎨", title: "Brand Design", desc: "Visual identity and ad creatives that communicate your brand story." },
-            ].map((item, i) => (
-              <FadeIn key={item.title} delay={i * 0.1}>
-                <div className="card-hover p-6 rounded-2xl bg-gray-900 border border-gray-800 hover:border-orange-400/40 h-full">
-                  <div className="text-3xl mb-4">{item.icon}</div>
-                  <h3 className="display font-bold text-white text-lg mb-2">{item.title}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
+            {/* Avatar card */}
+            <div className="flex-shrink-0">
+              <div className={`relative w-64 h-64 sm:w-80 sm:h-80 rounded-2xl border ${dark ? "border-[#2a2a2a]" : "border-[#ddd]"} flex items-center justify-center overflow-hidden`} style={{ background: dark ? "#111" : "#ece8e0" }}>
+                <div className="text-center">
+                  <div className="text-8xl mb-4">👨‍💻</div>
+                  <p className="text-sm tracking-widest" style={{ color: accent }}>MERN STACK</p>
+                  <p className={`text-xs ${muted} mt-1`}>Chandigarh, India</p>
                 </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* WORK */}
-      <section id="work" className="py-24 px-6 bg-gray-950">
-        <div className="max-w-6xl mx-auto">
-          <FadeIn>
-            <p className="text-orange-400 text-sm font-medium tracking-widest uppercase mb-3 text-center">Portfolio</p>
-            <h2 className="display text-4xl sm:text-5xl font-extrabold text-center mb-4">Selected Work</h2>
-            <p className="text-gray-400 text-center mb-16 max-w-xl mx-auto">Real campaigns, real results — across diverse industries.</p>
-          </FadeIn>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {PROJECTS.map((p, i) => (
-              <FadeIn key={p.title} delay={i * 0.1}>
-                <div className="card-hover rounded-2xl bg-gray-900 border border-gray-800 overflow-hidden group cursor-pointer">
-                  {/* Color band */}
-                  <div className="h-2" style={{ background: p.color }}></div>
-                  <div className="p-7">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <span className="text-xs font-medium tracking-widest uppercase text-gray-500">{p.category}</span>
-                        <h3 className="display text-xl font-bold text-white mt-1">{p.title}</h3>
-                      </div>
-                      <div className="text-4xl">{p.icon}</div>
-                    </div>
-                    <p className="text-gray-400 text-sm leading-relaxed mb-6">{p.desc}</p>
-
-                    <div className="flex items-center gap-4">
-                      {p.metrics.map(m => (
-                        <div key={m.label} className="rounded-xl px-4 py-2 border border-gray-700" style={{ borderColor: p.color + "40" }}>
-                          <p className="font-bold text-lg display" style={{ color: p.color }}>{m.val}</p>
-                          <p className="text-gray-500 text-xs">{m.label}</p>
-                        </div>
-                      ))}
-                      <span className="ml-auto text-xs px-3 py-1 rounded-full font-medium border" style={{ color: p.color, borderColor: p.color + "50" }}>{p.tag}</span>
-                    </div>
+                {/* Decorative corner */}
+                <div className="absolute top-0 right-0 w-16 h-16 opacity-20" style={{ background: `linear-gradient(135deg, ${accent}, transparent)` }} />
+                <div className="absolute bottom-0 left-0 w-16 h-16 opacity-20" style={{ background: `linear-gradient(315deg, ${accent}, transparent)` }} />
+              </div>
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-3 mt-4">
+                {[["9+", "Months Exp"], ["2+", "Projects"], ["5+", "Certs"]].map(([num, lab]) => (
+                  <div key={lab} className={`${card} border rounded-xl p-3 text-center`}>
+                    <div className="text-xl font-bold" style={{ color: accent }}>{num}</div>
+                    <div className={`text-xs ${muted} leading-tight`}>{lab}</div>
                   </div>
-                </div>
-              </FadeIn>
-            ))}
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* EXPERIENCE */}
-      <section className="py-24 px-6">
-        <div className="max-w-4xl mx-auto">
-          <FadeIn>
-            <p className="text-orange-400 text-sm font-medium tracking-widest uppercase mb-3 text-center">Journey</p>
-            <h2 className="display text-4xl sm:text-5xl font-extrabold text-center mb-16">Experience</h2>
-          </FadeIn>
+      <section className={`py-20 border-t ${dark ? "border-[#1a1a1a]" : "border-[#e8e4dc]"}`}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <SectionLabel accent={accent} muted={muted}>Experience</SectionLabel>
+          <div className="grid sm:grid-cols-2 gap-6 mt-10">
+            {EXPERIENCE.map((e) => (
+              <div key={e.company} className={`${card} border rounded-2xl p-6 hover:border-[#00c896] transition-colors group`}>
+                <div className="text-4xl mb-4">{e.icon}</div>
+                <h3 className="text-lg font-bold">{e.company}</h3>
+                <p className={`text-sm ${muted} mb-2`}>{e.role}</p>
+                <span className="text-xs px-3 py-1 rounded-full font-medium" style={{ backgroundColor: `${accent}22`, color: accent }}>{e.duration}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          <div className="relative">
-            <div className="absolute left-5 top-0 bottom-0 w-px bg-gray-800 hidden sm:block"></div>
-            <div className="flex flex-col gap-10">
-              {[
-                {
-                  date: "2026 – Present",
-                  title: "Digital Marketing Executive",
-                  company: "VKS Hytech Pvt Ltd",
-                  desc: "Managing social media campaigns, running Meta Ads for lead generation, creating ad creatives and copies, and supporting online growth strategies.",
-                  tags: ["Meta Ads", "SMM", "Content"],
-                },
-                {
-                  date: "2024 – Present",
-                  title: "Freelance Digital Marketer & SMM",
-                  company: "Self-Employed",
-                  desc: "Managed campaigns for 10+ clients across food, real estate, education, and travel. Created high-performing Meta Ads, reels, and content strategies.",
-                  tags: ["Freelance", "Multi-industry", "Strategy"],
-                },
-              ].map((exp, i) => (
-                <FadeIn key={exp.title} delay={i * 0.15}>
-                  <div className="sm:pl-14 relative">
-                    <div className="absolute left-3 top-2 w-4 h-4 rounded-full bg-orange-500 border-2 border-black hidden sm:block shadow-md shadow-orange-500/40"></div>
-                    <div className="p-6 rounded-2xl bg-gray-900 border border-gray-800 hover:border-orange-400/30 transition-colors">
-                      <div className="flex flex-wrap items-start justify-between gap-2 mb-3">
-                        <div>
-                          <h3 className="display font-bold text-white text-xl">{exp.title}</h3>
-                          <p className="text-orange-400 text-sm font-medium">{exp.company}</p>
-                        </div>
-                        <span className="text-gray-500 text-sm bg-gray-800 px-3 py-1 rounded-full">{exp.date}</span>
-                      </div>
-                      <p className="text-gray-400 text-sm leading-relaxed mb-4">{exp.desc}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {exp.tags.map(t => (
-                          <span key={t} className="text-xs px-3 py-1 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20">{t}</span>
-                        ))}
-                      </div>
+      {/* PROJECTS */}
+      <section id="projects" className={`py-20 border-t ${dark ? "border-[#1a1a1a]" : "border-[#e8e4dc]"}`}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <SectionLabel accent={accent} muted={muted}>Projects</SectionLabel>
+          <div className="grid sm:grid-cols-2 gap-8 mt-10">
+            {PROJECTS.map((p, i) => (
+              <div key={i} className={`${card} border rounded-2xl p-6 hover:border-[#00c896] transition-all hover:-translate-y-1 duration-300 group`}>
+                <div className="text-5xl mb-5">{p.emoji}</div>
+                <h3 className="text-base sm:text-lg font-bold mb-3 group-hover:text-[#00c896] transition-colors">{p.name}</h3>
+                <p className={`text-sm ${muted} mb-5 leading-relaxed`}>{p.desc}</p>
+                <div className="flex flex-wrap gap-2">
+                  {p.tech.map((t) => (
+                    <span key={t} className="text-xs px-3 py-1 rounded-full font-medium" style={{ backgroundColor: `${accent}15`, color: accent }}>{t}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SKILLS */}
+      <section id="skills" ref={skillRef} className={`py-20 border-t ${dark ? "border-[#1a1a1a]" : "border-[#e8e4dc]"}`}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <SectionLabel accent={accent} muted={muted}>Skills</SectionLabel>
+          <div className="flex flex-wrap gap-3 mt-10">
+            {SKILLS.map((s, i) => (
+              <span
+                key={s}
+                className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all duration-500 ${dark ? "border-[#2a2a2a] hover:border-[#00c896]" : "border-[#ddd] hover:border-[#00c896]"} hover:text-[#00c896]`}
+                style={{
+                  opacity: skillVisible ? 1 : 0,
+                  transform: skillVisible ? "translateY(0)" : "translateY(20px)",
+                  transitionDelay: `${i * 60}ms`,
+                }}
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* EDUCATION & CERTS */}
+      <section className={`py-20 border-t ${dark ? "border-[#1a1a1a]" : "border-[#e8e4dc]"}`}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="grid md:grid-cols-2 gap-12">
+            <div>
+              <SectionLabel accent={accent} muted={muted}>Education</SectionLabel>
+              <div className="mt-8 space-y-6">
+                {[
+                  ["Chandigarh University", "B.Tech — Computer Science", "71%"],
+                  ["Shivalik Science School", "Higher Secondary (12th)", "84%"],
+                  ["Shivalik Science School", "Matriculation (10th)", "83%"],
+                ].map(([school, deg, pct]) => (
+                  <div key={school + deg} className={`${card} border rounded-xl p-4 flex items-start gap-4`}>
+                    <div className="text-2xl">🎓</div>
+                    <div>
+                      <p className="font-bold text-sm">{school}</p>
+                      <p className={`text-xs ${muted}`}>{deg}</p>
+                      <p className="text-xs mt-1 font-medium" style={{ color: accent }}>{pct}</p>
                     </div>
                   </div>
-                </FadeIn>
-              ))}
+                ))}
+              </div>
+            </div>
+            <div>
+              <SectionLabel accent={accent} muted={muted}>Certifications</SectionLabel>
+              <div className="mt-8 space-y-4">
+                {CERTS.map((c) => (
+                  <div key={c} className={`${card} border rounded-xl p-4 flex items-start gap-3`}>
+                    <span className="text-[#00c896] text-xl mt-0.5">✦</span>
+                    <p className="text-sm leading-snug">{c}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
-      <section className="py-24 px-6 bg-gray-950 overflow-hidden">
-        <div className="max-w-3xl mx-auto text-center">
-          <FadeIn>
-            <p className="text-orange-400 text-sm font-medium tracking-widest uppercase mb-3">Social Proof</p>
-            <h2 className="display text-4xl sm:text-5xl font-extrabold mb-16">What Clients Say</h2>
-          </FadeIn>
-          <div className="relative min-h-48">
-            {TESTIMONIALS.map((t, i) => (
-              <div
-                key={i}
-                className="absolute inset-0 transition-all duration-700"
-                style={{ opacity: tIdx === i ? 1 : 0, transform: tIdx === i ? "translateY(0)" : "translateY(20px)", pointerEvents: tIdx === i ? "auto" : "none" }}
-              >
-                <div className="p-8 rounded-3xl bg-gray-900 border border-gray-800">
-                  <p className="text-2xl text-orange-400 mb-4">"</p>
-                  <p className="text-gray-200 text-lg leading-relaxed mb-6 italic">"{t.text}"</p>
-                  <div className="flex items-center justify-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center font-bold text-black display">{t.name[0]}</div>
-                    <div className="text-left">
-                      <p className="text-white font-semibold text-sm">{t.name}</p>
-                      <p className="text-gray-500 text-xs">{t.role}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          {/* Dots */}
-          <div className="flex justify-center gap-2 mt-52 sm:mt-48">
-            {TESTIMONIALS.map((_, i) => (
-              <button key={i} onClick={() => setTIdx(i)} className={`w-2 h-2 rounded-full transition-all ${tIdx === i ? "bg-orange-400 w-6" : "bg-gray-600"}`} />
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CONTACT */}
-      <section id="contact" className="py-24 px-6">
-        <div className="max-w-5xl mx-auto">
-          <FadeIn>
-            <p className="text-orange-400 text-sm font-medium tracking-widest uppercase mb-3 text-center">Get In Touch</p>
-            <h2 className="display text-4xl sm:text-5xl font-extrabold text-center mb-4">Let's Connect</h2>
-            <p className="text-gray-400 text-center mb-16 max-w-md mx-auto">Ready to grow your brand? I'd love to hear about your project.</p>
-          </FadeIn>
-
-          <div className="grid md:grid-cols-2 gap-10">
-            {/* Info */}
-            <FadeIn>
-              <div className="space-y-6">
-                <div className="p-6 rounded-2xl bg-gray-900 border border-gray-800 flex items-center gap-4 hover:border-orange-400/40 transition-colors">
-                  <div className="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 text-xl">✉</div>
-                  <div>
-                    <p className="text-gray-500 text-xs uppercase tracking-widest mb-1">Email</p>
-                    <p className="text-white font-medium">uxdeepen@gmail.com</p>
-                  </div>
-                </div>
-                <div className="p-6 rounded-2xl bg-gray-900 border border-gray-800 flex items-center gap-4 hover:border-orange-400/40 transition-colors">
-                  <div className="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 text-xl">📞</div>
-                  <div>
-                    <p className="text-gray-500 text-xs uppercase tracking-widest mb-1">Phone</p>
-                    <p className="text-white font-medium">+91 XXXXXXXXXX</p>
-                  </div>
-                </div>
-                <div className="p-6 rounded-2xl bg-gray-900 border border-gray-800 flex items-center gap-4 hover:border-orange-400/40 transition-colors">
-                  <div className="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 text-xl">📍</div>
-                  <div>
-                    <p className="text-gray-500 text-xs uppercase tracking-widest mb-1">Location</p>
-                    <p className="text-white font-medium">Himachal Pradesh / Chandigarh, India</p>
-                  </div>
-                </div>
-                {/* Languages */}
-                <div className="p-6 rounded-2xl bg-gray-900 border border-gray-800">
-                  <p className="text-gray-500 text-xs uppercase tracking-widest mb-3">Languages</p>
-                  <div className="flex gap-2">
-                    {["English", "Hindi", "Punjabi"].map(l => (
-                      <span key={l} className="text-sm px-3 py-1 rounded-full bg-gray-800 text-gray-300 border border-gray-700">{l}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </FadeIn>
-
-            {/* CTA card */}
-            <FadeIn delay={0.15}>
-              <div className="p-8 rounded-3xl bg-gradient-to-br from-orange-500 to-orange-600 h-full flex flex-col justify-between">
-                <div>
-                  <h3 className="display text-3xl font-extrabold text-black mb-4">Ready to scale your brand?</h3>
-                  <p className="text-orange-950 text-sm leading-relaxed mb-8">
-                    Whether you need Meta Ads, content strategy, reels, or full social media management — let's make it happen together.
-                  </p>
-                </div>
-                <div className="space-y-3">
-                  <a href="mailto:uxdeepen@gmail.com" className="block w-full text-center bg-black text-white font-semibold py-4 rounded-2xl hover:bg-gray-900 transition-colors text-sm">
-                    Send Me an Email
-                  </a>
-                  <div className="flex gap-3 justify-center">
-                    {["LinkedIn", "Instagram", "Behance"].map(s => (
-                      <button key={s} className="flex-1 text-center border border-orange-400/50 text-black text-xs py-2 rounded-xl hover:bg-black/10 transition-colors">{s}</button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </FadeIn>
+      <section id="contact" className={`py-20 border-t ${dark ? "border-[#1a1a1a]" : "border-[#e8e4dc]"}`}>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+          <SectionLabel accent={accent} muted={muted}>Contact</SectionLabel>
+          <h2 className="text-3xl sm:text-4xl font-bold mt-6 mb-4">Let's Work Together</h2>
+          <p className={`${muted} mb-10 text-sm sm:text-base`}>Open to new opportunities and collaborations. Drop a message!</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="mailto:kdilmohan101@gmail.com" className="flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-bold text-sm tracking-wide text-black transition-all hover:scale-105" style={{ backgroundColor: accent }}>
+              📧 kdilmohan101@gmail.com
+            </a>
+            <a href="tel:+919218600126" className={`flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-sm tracking-wide border transition-all hover:scale-105 ${dark ? "border-[#333] hover:border-[#00c896]" : "border-[#ccc] hover:border-[#00c896]"}`}>
+              📞 +91 9218600126
+            </a>
+          </div>
+          <div className="flex justify-center gap-6 mt-8">
+            <a href="https://github.com/dilmohankumar?tab=repositories" target="_blank" rel="noreferrer" className={`${muted} hover:text-[#00c896] text-sm transition-colors`}>GitHub ↗</a>
+            <a href="https://www.linkedin.com/in/dilmohan-kumar-b230b921b/" target="_blank" rel="noreferrer" className={`${muted} hover:text-[#00c896] text-sm transition-colors`}>LinkedIn ↗</a>
           </div>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="border-t border-gray-800 py-8 px-6 text-center">
-        <p className="text-gray-600 text-sm">
-          © 2026 <span className="text-orange-400">Danish</span> · Digital Marketing Executive · Made with ❤️
-        </p>
+      <footer className={`py-6 border-t text-center ${dark ? "border-[#1a1a1a]" : "border-[#e8e4dc]"}`}>
+        <p className={`text-xs ${muted} tracking-widest`}>© 2026 DILMOHAN KUMAR</p>
       </footer>
+    </div>
+  );
+} 
+
+function SectionLabel({ children, accent, muted }) {
+  return (
+    <div className="flex items-center gap-4">
+      <span className="text-xs tracking-[0.4em] uppercase font-bold" style={{ color: accent }}>{children}</span>
+      <div className="flex-1 h-px" style={{ background: `linear-gradient(to right, ${accent}44, transparent)` }} />
     </div>
   );
 }
