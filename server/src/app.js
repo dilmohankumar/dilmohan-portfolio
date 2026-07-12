@@ -15,21 +15,14 @@ const app = express();
 
 app.set("trust proxy", 1);
 
-const isProd = process.env.NODE_ENV === "production";
-const localDevOriginPattern = /^http:\/\/localhost:5\d{3}$/;
-
 app.use(helmet());
 app.use(
   cors({
-    // In production, lock to the exact configured origin. In development, allow any
-    // localhost:5xxx port — Vite bumps ports when one is already taken, and re-editing
-    // CLIENT_ORIGIN every time that happens is needless friction for local dev.
-    origin: isProd
-      ? process.env.CLIENT_ORIGIN
-      : (origin, callback) => {
-          if (!origin || localDevOriginPattern.test(origin)) return callback(null, true);
-          callback(new Error("Not allowed by CORS"));
-        },
+    // Reflect whatever origin made the request (this is a public single-admin API, not a
+    // multi-tenant service with per-origin trust boundaries) so local dev, the deployed
+    // frontend, and any future domain/port all work without editing CLIENT_ORIGIN each time.
+    // Mutating requests are still gated by the CSRF token check in requireAdmin, not by CORS.
+    origin: (origin, callback) => callback(null, true),
     credentials: true,
   })
 );
