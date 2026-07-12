@@ -144,7 +144,7 @@ export default function Portfolio() {
                 {l}
               </button>
             ))}
-            <AdminNavItem isAdmin={isAdmin} muted={muted} />
+            <AdminNavItem muted={muted} />
             <button
               onClick={toggleDark}
               className="ml-4 w-12 h-6 rounded-full relative transition-colors duration-300"
@@ -210,12 +210,7 @@ export default function Portfolio() {
                 {l}
               </button>
             ))}
-            <AdminNavItem
-              isAdmin={isAdmin}
-              muted={muted}
-              mobile
-              onNavigate={() => setMenuOpen(false)}
-            />
+            <AdminNavItem muted={muted} mobile onNavigate={() => setMenuOpen(false)} />
           </div>
         )}
       </nav>
@@ -588,28 +583,16 @@ export default function Portfolio() {
   );
 }
 
-function AdminNavItem({ isAdmin, muted, mobile, onNavigate }) {
+function AdminNavItem({ muted, mobile, onNavigate }) {
   const base = `${mobile ? "text-left" : ""} text-sm tracking-widest uppercase`;
-  if (isAdmin) {
-    return (
-      <Link
-        to="/admin"
-        onClick={onNavigate}
-        className={`${base} transition-colors hover:text-[#00c896] ${muted}`}
-      >
-        Admin
-      </Link>
-    );
-  }
   return (
-    <button
-      type="button"
-      disabled
-      title="Log in as admin to access this page"
-      className={`${base} opacity-40 cursor-not-allowed ${muted}`}
+    <Link
+      to="/admin"
+      onClick={onNavigate}
+      className={`${base} transition-colors hover:text-[#00c896] ${muted}`}
     >
       Admin
-    </button>
+    </Link>
   );
 }
 
