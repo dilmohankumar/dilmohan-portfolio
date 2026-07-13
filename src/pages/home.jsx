@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
-import { useAuth } from "../context/AuthContext";
 import { useHomeContent } from "../hooks/useHomeContent";
 import { ACCENT, getThemeClasses } from "../constants/theme";
 
@@ -9,7 +8,6 @@ const NAV_LINKS = ["About", "Projects", "Skills", "Contact"];
 
 export default function Portfolio() {
   const { dark, toggleDark } = useTheme();
-  const { isAdmin } = useAuth();
   const { content, projects, experience, education, loading, error } =
     useHomeContent();
 
