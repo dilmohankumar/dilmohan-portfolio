@@ -18,7 +18,7 @@ const DEFAULT_NAV_LINKS = [
 export default function AdminDashboard() {
   const { dark, toggleDark } = useTheme();
   const { bg, text, card, muted } = getThemeClasses(dark);
-  const { email, csrfToken, logout } = useAuth();
+  const { email, username, csrfToken, logout } = useAuth();
   const { content, projects, experience, education, sections, loading, error, refetch } = useHomeContent();
 
   if (loading && !content) {
@@ -176,6 +176,14 @@ export default function AdminDashboard() {
               Admin Dashboard
             </h1>
             <p className={`text-xs ${muted} mt-1`}>Signed in as {email}</p>
+            {username && (
+              <p className={`text-xs ${muted} mt-1`}>
+                Your live portfolio:{" "}
+                <a href={`/u/${username}`} target="_blank" rel="noreferrer" className="hover:underline" style={{ color: ACCENT }}>
+                  /u/{username}
+                </a>
+              </p>
+            )}
           </div>
           <div className="flex items-center gap-4">
             <a href="/" className={`text-xs ${muted} hover:text-[#00c896]`}>

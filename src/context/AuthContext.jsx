@@ -4,15 +4,20 @@ import { api } from "../api/client";
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [auth, setAuth] = useState({ isAdmin: false, email: null, csrfToken: null });
+  const [auth, setAuth] = useState({ isAdmin: false, email: null, username: null, csrfToken: null });
   const [loading, setLoading] = useState(true);
 
   const refreshSession = useCallback(async () => {
     try {
       const { data } = await api.get("/auth/me");
-      setAuth({ isAdmin: !!data.isAdmin, email: data.email ?? null, csrfToken: data.csrfToken ?? null });
+      setAuth({
+        isAdmin: !!data.isAdmin,
+        email: data.email ?? null,
+        username: data.username ?? null,
+        csrfToken: data.csrfToken ?? null,
+      });
     } catch {
-      setAuth({ isAdmin: false, email: null, csrfToken: null });
+      setAuth({ isAdmin: false, email: null, username: null, csrfToken: null });
     } finally {
       setLoading(false);
     }
@@ -26,19 +31,24 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(async (email, password) => {
     const { data } = await api.post("/auth/login", { email, password });
-    setAuth({ isAdmin: true, email: data.email, csrfToken: data.csrfToken });
+    setAuth({ isAdmin: true, email: data.email, username: data.username, csrfToken: data.csrfToken });
+  }, []);
+
+  const register = useCallback(async (payload) => {
+    const { data } = await api.post("/auth/register", payload);
+    setAuth({ isAdmin: true, email: data.email, username: data.username, csrfToken: data.csrfToken });
   }, []);
 
   const logout = useCallback(async () => {
     try {
       await api.post("/auth/logout", {}, auth.csrfToken);
     } finally {
-      setAuth({ isAdmin: false, email: null, csrfToken: null });
+      setAuth({ isAdmin: false, email: null, username: null, csrfToken: null });
     }
   }, [auth.csrfToken]);
 
   return (
-    <AuthContext.Provider value={{ ...auth, loading, login, logout }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ ...auth, loading, login, register, logout }}>{children}</AuthContext.Provider>
   );
 }
 

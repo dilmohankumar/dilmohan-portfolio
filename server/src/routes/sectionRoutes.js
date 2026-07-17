@@ -9,17 +9,17 @@ import {
   updateSection,
 } from "../controllers/sectionController.js";
 import { BUILT_IN_TYPES, CUSTOM_LAYOUTS } from "../models/Section.js";
-import { requireAdmin } from "../middleware/auth.js";
+import { requireAuth } from "../middleware/auth.js";
 import { validate } from "../middleware/validate.js";
 
 const router = Router();
 
-router.get("/", listSections);
-router.get("/missing-built-ins", listMissingBuiltIns);
+router.get("/", requireAuth, listSections);
+router.get("/missing-built-ins", requireAuth, listMissingBuiltIns);
 
 router.post(
   "/",
-  requireAdmin,
+  requireAuth,
   [
     body("title").optional().isString().trim().isLength({ max: 100 }),
     body("layout").optional().isIn(CUSTOM_LAYOUTS),
@@ -33,7 +33,7 @@ router.post(
 // path "reorder" against the ":id" param route first.
 router.patch(
   "/reorder",
-  requireAdmin,
+  requireAuth,
   [body("order").isArray({ min: 1 }), body("order.*").isMongoId()],
   validate,
   reorderSections
@@ -41,7 +41,7 @@ router.patch(
 
 router.patch(
   "/:id",
-  requireAdmin,
+  requireAuth,
   [
     param("id").isMongoId(),
     body("title").optional().isString().trim().isLength({ max: 100 }),
@@ -59,6 +59,6 @@ router.patch(
   updateSection
 );
 
-router.delete("/:id", requireAdmin, [param("id").isMongoId()], validate, deleteSection);
+router.delete("/:id", requireAuth, [param("id").isMongoId()], validate, deleteSection);
 
 export default router;

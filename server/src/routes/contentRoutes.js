@@ -1,17 +1,18 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { getContent, getHome, updateContent } from "../controllers/contentController.js";
-import { requireAdmin } from "../middleware/auth.js";
+import { getContent, getMyHome, getPublicHome, updateContent } from "../controllers/contentController.js";
+import { requireAuth } from "../middleware/auth.js";
 import { validate } from "../middleware/validate.js";
 
 const router = Router();
 
-router.get("/home", getHome);
-router.get("/content", getContent);
+router.get("/me/home", requireAuth, getMyHome);
+router.get("/portfolio/:username/home", getPublicHome);
+router.get("/content", requireAuth, getContent);
 
 router.patch(
   "/content",
-  requireAdmin,
+  requireAuth,
   [
     body("name").optional().isString().trim().isLength({ min: 1, max: 100 }),
     body("heroGreeting").optional().isString().trim().isLength({ max: 100 }),

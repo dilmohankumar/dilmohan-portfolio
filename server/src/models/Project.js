@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const projectSchema = new mongoose.Schema(
   {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     name: { type: String, required: true, trim: true, maxlength: 120 },
     desc: { type: String, required: true, trim: true, maxlength: 500 },
     tech: [{ type: String, trim: true, maxlength: 40 }],

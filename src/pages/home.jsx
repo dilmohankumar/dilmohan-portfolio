@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import { useHomeContent } from "../hooks/useHomeContent";
 import { ACCENT, getThemeClasses } from "../constants/theme";
@@ -13,8 +13,9 @@ const DEFAULT_NAV_LINKS = [
 ];
 
 export default function Portfolio() {
+  const { username } = useParams();
   const { dark, toggleDark } = useTheme();
-  const { content, projects, experience, education, sections, loading, error } = useHomeContent();
+  const { content, projects, experience, education, sections, loading, error, notFound } = useHomeContent(username);
   const navLinks = content?.navLinks?.length ? content.navLinks : DEFAULT_NAV_LINKS;
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -84,6 +85,19 @@ export default function Portfolio() {
     return (
       <div className={`${bg} ${text} min-h-screen flex items-center justify-center font-mono`}>
         <p className={`text-sm tracking-widest uppercase ${muted}`}>Loading…</p>
+      </div>
+    );
+  }
+
+  if (notFound) {
+    return (
+      <div className={`${bg} ${text} min-h-screen flex items-center justify-center font-mono px-6`}>
+        <div className="text-center">
+          <p className="text-sm mb-4">This portfolio doesn't exist.</p>
+          <Link to="/" className="text-sm hover:underline" style={{ color: ACCENT }}>
+            ← Back home
+          </Link>
+        </div>
       </div>
     );
   }

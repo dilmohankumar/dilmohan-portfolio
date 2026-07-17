@@ -2,8 +2,8 @@ import { AppError } from "../utils/AppError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 // Shared CRUD behavior for the itemized-list models (Project, Experience, Education) —
-// each needs identical list/create/update/delete semantics, only the Model and allowed
-// fields differ.
+// each needs identical list/create/update/delete semantics scoped to the logged-in user,
+// only the Model and allowed fields differ.
 export function makeCrudController(Model, allowedFields) {
   const pick = (body) =>
     allowedFields.reduce((acc, field) => {
@@ -12,17 +12,17 @@ export function makeCrudController(Model, allowedFields) {
     }, {});
 
   const list = asyncHandler(async (req, res) => {
-    const items = await Model.find().sort({ createdAt: 1 });
+    const items = await Model.find({ userId: req.user.id }).sort({ createdAt: 1 });
     res.json({ data: items });
   });
 
   const create = asyncHandler(async (req, res) => {
-    const item = await Model.create(pick(req.body));
+    const item = await Model.create({ ...pick(req.body), userId: req.user.id });
     res.status(201).json({ data: item });
   });
 
   const update = asyncHandler(async (req, res) => {
-    const item = await Model.findByIdAndUpdate(req.params.id, pick(req.body), {
+    const item = await Model.findOneAndUpdate({ _id: req.params.id, userId: req.user.id }, pick(req.body), {
       new: true,
       runValidators: true,
     });
@@ -31,7 +31,7 @@ export function makeCrudController(Model, allowedFields) {
   });
 
   const remove = asyncHandler(async (req, res) => {
-    const item = await Model.findByIdAndDelete(req.params.id);
+    const item = await Model.findOneAndDelete({ _id: req.params.id, userId: req.user.id });
     if (!item) throw new AppError("Not found", 404);
     res.json({ data: { id: req.params.id } });
   });

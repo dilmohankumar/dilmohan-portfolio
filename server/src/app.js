@@ -21,7 +21,7 @@ app.use(
     // Reflect whatever origin made the request (this is a public single-admin API, not a
     // multi-tenant service with per-origin trust boundaries) so local dev, the deployed
     // frontend, and any future domain/port all work without editing CLIENT_ORIGIN each time.
-    // Mutating requests are still gated by the CSRF token check in requireAdmin, not by CORS.
+    // Mutating requests are still gated by the CSRF token check in requireAuth, not by CORS.
     origin: (origin, callback) => callback(null, true),
     credentials: true,
   })

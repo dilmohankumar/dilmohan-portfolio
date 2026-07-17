@@ -1,4 +1,6 @@
 import { Routes, Route } from "react-router-dom"
+import Landing from "../src/pages/Landing"
+import Signup from "../src/pages/Signup"
 import Home from "../src/pages/home"
 import AdminLogin from "../src/pages/admin/AdminLogin"
 import AdminDashboard from "../src/pages/admin/AdminDashboard"
@@ -7,7 +9,8 @@ import RequireAdmin from "../src/components/RequireAdmin"
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Landing />} />
+      <Route path="/signup" element={<Signup />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route
         path="/admin"
@@ -17,6 +20,7 @@ function App() {
           </RequireAdmin>
         }
       />
+      <Route path="/u/:username" element={<Home />} />
     </Routes>
   )
 }

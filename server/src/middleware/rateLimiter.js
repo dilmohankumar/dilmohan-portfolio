@@ -16,3 +16,11 @@ export const loginLimiter = rateLimit({
   skipSuccessfulRequests: true,
   message: { error: { message: "Too many login attempts, please try again later" } },
 });
+
+export const registerLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: { message: "Too many accounts created from this network, please try again later" } },
+});

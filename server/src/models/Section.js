@@ -44,6 +44,7 @@ const itemSchema = new mongoose.Schema(
 
 const sectionSchema = new mongoose.Schema(
   {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     type: {
       type: String,
       enum: [...BUILT_IN_TYPES, "custom"],
@@ -54,14 +55,18 @@ const sectionSchema = new mongoose.Schema(
     visible: { type: Boolean, default: true },
     layout: { type: String, enum: CUSTOM_LAYOUTS, default: "cards" }, // only meaningful for type: "custom"
     items: [itemSchema], // only meaningful for type: "custom"
+    // Set true only for built-in-type sections. Exists purely so the partial index below can
+    // target them via an equality match — MongoDB's partialFilterExpression doesn't support
+    // $ne/$nin, so we can't filter directly on `type !== "custom"`.
+    builtIn: { type: Boolean },
   },
   { timestamps: true }
 );
 
-// A built-in type may only ever exist once; custom sections are unrestricted.
+// A built-in type may only ever exist once per user; custom sections are unrestricted.
 sectionSchema.index(
-  { type: 1 },
-  { unique: true, partialFilterExpression: { type: { $ne: "custom" } } }
+  { userId: 1, type: 1 },
+  { unique: true, partialFilterExpression: { builtIn: true } }
 );
 
 export const Section = mongoose.model("Section", sectionSchema);

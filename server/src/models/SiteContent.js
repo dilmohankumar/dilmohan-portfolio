@@ -20,7 +20,8 @@ const navLinkSchema = new mongoose.Schema(
 
 const siteContentSchema = new mongoose.Schema(
   {
-    key: { type: String, default: "main", unique: true },
+    // One content doc per user — this is what scopes a portfolio to its owner.
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, unique: true },
 
     name: { type: String, required: true, trim: true, maxlength: 100 },
     heroGreeting: { type: String, trim: true, maxlength: 100 },

@@ -13,7 +13,9 @@ async function request(path, { method = "GET", body, csrfToken } = {}) {
 
   const json = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new Error(json?.error?.message || `Request failed (${res.status})`);
+    const error = new Error(json?.error?.message || `Request failed (${res.status})`);
+    error.status = res.status;
+    throw error;
   }
   return json;
 }
