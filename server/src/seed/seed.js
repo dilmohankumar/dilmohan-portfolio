@@ -7,6 +7,7 @@ import { SiteContent } from "../models/SiteContent.js";
 import { Project } from "../models/Project.js";
 import { Experience } from "../models/Experience.js";
 import { Education } from "../models/Education.js";
+import { Section } from "../models/Section.js";
 
 const SITE_CONTENT = {
   key: "main",
@@ -23,6 +24,14 @@ const SITE_CONTENT = {
   avatarEmoji: "👨‍💻",
   avatarLabel: "MERN STACK",
   avatarLocation: "Chandigarh, India",
+  accentColor: "#00c896",
+  logoText: "DK.",
+  navLinks: [
+    { label: "About", target: "about" },
+    { label: "Projects", target: "projects" },
+    { label: "Skills", target: "skills" },
+    { label: "Contact", target: "contact" },
+  ],
   stats: [
     { value: "7mo", label: "Experience" },
     { value: "4+", label: "Projects" },
@@ -122,6 +131,19 @@ const EDUCATION = [
   },
 ];
 
+// Layout-only records — order/title/visibility for each built-in homepage block.
+// Hero's title is intentionally blank; it isn't rendered publicly, it just gives
+// the admin's drag-and-drop list something to label that row with.
+const SECTIONS = [
+  { type: "hero", title: "", order: 0 },
+  { type: "experience", title: "Experience", order: 1 },
+  { type: "projects", title: "Projects", order: 2 },
+  { type: "skills", title: "Skills", order: 3 },
+  { type: "education", title: "Education", order: 4 },
+  { type: "certifications", title: "Certifications", order: 5 },
+  { type: "contact", title: "Contact", order: 6 },
+];
+
 async function seedAdmin() {
   const existing = await Admin.countDocuments();
   if (existing > 0) {
@@ -156,6 +178,27 @@ async function seedCollection(Model, docs, label) {
   console.log(`${label} seeded with ${docs.length} document(s).`);
 }
 
+// Unlike seedCollection's all-or-nothing check, this restores only whichever built-in
+// section types are currently missing — so if an admin deletes e.g. just "skills" from
+// Page Layout, re-running seed brings that one back without touching or duplicating
+// any of the others (custom sections are untouched either way; they aren't in SECTIONS).
+async function seedBuiltInSections() {
+  const existingTypes = new Set((await Section.find({ type: { $ne: "custom" } }).select("type")).map((s) => s.type));
+  const missing = SECTIONS.filter((s) => !existingTypes.has(s.type));
+  if (missing.length === 0) {
+    console.log("Sections: all built-in sections already exist, skipping.");
+    return;
+  }
+  // Append after whatever currently has the highest order, rather than trusting SECTIONS'
+  // hardcoded 0-6 values — those would collide with existing sections' orders after any
+  // admin reordering, since reorder always renumbers everything sequentially.
+  const last = await Section.findOne().sort({ order: -1 });
+  let nextOrder = last ? last.order + 1 : 0;
+  const toInsert = missing.map((s) => ({ ...s, order: nextOrder++ }));
+  await Section.insertMany(toInsert);
+  console.log(`Sections: restored ${missing.length} missing built-in section(s): ${missing.map((s) => s.type).join(", ")}.`);
+}
+
 async function run() {
   await connectDB();
   await seedAdmin();
@@ -163,6 +206,7 @@ async function run() {
   await seedCollection(Project, PROJECTS, "Projects");
   await seedCollection(Experience, EXPERIENCE, "Experience");
   await seedCollection(Education, EDUCATION, "Education");
+  await seedBuiltInSections();
   await mongoose.disconnect();
   console.log("Seed complete.");
 }

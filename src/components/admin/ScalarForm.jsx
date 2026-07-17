@@ -58,6 +58,22 @@ export default function ScalarForm({ title, fields, initialValues, onSave }) {
                 onChange={(e) => setField(f.key, e.target.value.split("\n"))}
                 className={inputClass}
               />
+            ) : f.type === "color" ? (
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={values[f.key] || "#00c896"}
+                  onChange={(e) => setField(f.key, e.target.value)}
+                  className="w-10 h-10 rounded-lg border-0 bg-transparent p-0 cursor-pointer"
+                />
+                <input
+                  type="text"
+                  value={values[f.key] ?? ""}
+                  placeholder="#00c896"
+                  onChange={(e) => setField(f.key, e.target.value)}
+                  className={inputClass}
+                />
+              </div>
             ) : (
               <input
                 type="text"

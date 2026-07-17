@@ -1,6 +1,7 @@
 import { Education } from "../models/Education.js";
 import { Experience } from "../models/Experience.js";
 import { Project } from "../models/Project.js";
+import { Section } from "../models/Section.js";
 import { SiteContent } from "../models/SiteContent.js";
 import { AppError } from "../utils/AppError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -13,6 +14,9 @@ const CONTENT_FIELDS = [
   "avatarEmoji",
   "avatarLabel",
   "avatarLocation",
+  "accentColor",
+  "logoText",
+  "navLinks",
   "stats",
   "skills",
   "certifications",
@@ -44,11 +48,12 @@ export const updateContent = asyncHandler(async (req, res) => {
 });
 
 export const getHome = asyncHandler(async (req, res) => {
-  const [content, projects, experience, education] = await Promise.all([
+  const [content, projects, experience, education, sections] = await Promise.all([
     getSiteContentOrThrow(),
     Project.find().sort({ createdAt: 1 }),
     Experience.find().sort({ createdAt: 1 }),
     Education.find().sort({ createdAt: 1 }),
+    Section.find().sort({ order: 1 }),
   ]);
-  res.json({ data: { content, projects, experience, education } });
+  res.json({ data: { content, projects, experience, education, sections } });
 });

@@ -26,7 +26,7 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json({ limit: "10kb" }));
+app.use(express.json({ limit: "50kb" }));
 app.use(cookieParser());
 app.use(mongoSanitize());
 app.use(compression());

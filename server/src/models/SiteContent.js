@@ -8,6 +8,16 @@ const statSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const navLinkSchema = new mongoose.Schema(
+  {
+    label: { type: String, required: true, trim: true, maxlength: 30 },
+    // The DOM id scrollTo() targets — not every section renders one, so this is
+    // free text rather than a ref; admin is responsible for pointing it at a real id.
+    target: { type: String, required: true, trim: true, maxlength: 30 },
+  },
+  { _id: false }
+);
+
 const siteContentSchema = new mongoose.Schema(
   {
     key: { type: String, default: "main", unique: true },
@@ -20,6 +30,16 @@ const siteContentSchema = new mongoose.Schema(
     avatarEmoji: { type: String, trim: true, maxlength: 10 },
     avatarLabel: { type: String, trim: true, maxlength: 40 },
     avatarLocation: { type: String, trim: true, maxlength: 60 },
+
+    // Site-wide appearance & header — drives the accent color and nav shown on the public page.
+    accentColor: {
+      type: String,
+      trim: true,
+      default: "#00c896",
+      match: /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/,
+    },
+    logoText: { type: String, trim: true, maxlength: 20, default: "DK." },
+    navLinks: [navLinkSchema],
 
     stats: [statSchema],
     skills: [{ type: String, trim: true, maxlength: 40 }],

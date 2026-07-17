@@ -17,6 +17,13 @@ router.patch(
     body("heroGreeting").optional().isString().trim().isLength({ max: 100 }),
     body("bio").optional().isString().trim().isLength({ min: 1, max: 1000 }),
     body("roles").optional().isArray(),
+    body("accentColor")
+      .optional()
+      .matches(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/),
+    body("logoText").optional().isString().trim().isLength({ max: 20 }),
+    body("navLinks").optional().isArray({ max: 10 }),
+    body("navLinks.*.label").optional().isString().trim().isLength({ min: 1, max: 30 }),
+    body("navLinks.*.target").optional().isString().trim().isLength({ min: 1, max: 30 }),
     body("stats").optional().isArray(),
     body("skills").optional().isArray(),
     body("certifications").optional().isArray(),
