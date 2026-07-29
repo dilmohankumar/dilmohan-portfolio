@@ -3,6 +3,7 @@ import ArrayFieldEditor from "../../components/admin/ArrayFieldEditor";
 import CrudListSection from "../../components/admin/CrudListSection";
 import PageLayoutEditor from "../../components/admin/PageLayoutEditor";
 import ScalarForm from "../../components/admin/ScalarForm";
+import ThemeEditor from "../../components/admin/ThemeEditor";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import { ACCENT, getThemeClasses } from "../../constants/theme";
@@ -212,16 +213,12 @@ export default function AdminDashboard() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 pt-8 space-y-8">
+        <ThemeEditor content={content} onSave={patchContent} />
+
         <ScalarForm
-          title="Site Appearance & Header"
-          fields={[
-            { key: "accentColor", label: "Accent Color", type: "color" },
-            { key: "logoText", label: "Logo / Brand Text" },
-          ]}
-          initialValues={{
-            accentColor: content.accentColor || "#00c896",
-            logoText: content.logoText || "DK.",
-          }}
+          title="Header & Branding"
+          fields={[{ key: "logoText", label: "Logo / Brand Text" }]}
+          initialValues={{ logoText: content.logoText || "DK." }}
           onSave={patchContent}
         />
 

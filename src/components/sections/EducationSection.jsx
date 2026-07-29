@@ -1,10 +1,10 @@
 import SectionLabel from "./SectionLabel";
 
-export default function EducationSection({ section, education, dark, accent, muted, card }) {
+export default function EducationSection({ section, education, accent, muted, card }) {
   if (!education?.length) return null;
 
   return (
-    <section className={`py-20 border-t ${dark ? "border-[#1a1a1a]" : "border-[#e8e4dc]"}`}>
+    <section className="py-20 border-t border-[color:var(--t-border)]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <SectionLabel accent={accent}>{section.title}</SectionLabel>
         <div className="mt-10 space-y-6 max-w-2xl">

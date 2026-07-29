@@ -5,6 +5,7 @@ import projectRoutes from "./projectRoutes.js";
 import experienceRoutes from "./experienceRoutes.js";
 import educationRoutes from "./educationRoutes.js";
 import sectionRoutes from "./sectionRoutes.js";
+import uploadRoutes from "./uploadRoutes.js";
 
 const router = Router();
 
@@ -16,5 +17,6 @@ router.use("/projects", projectRoutes);
 router.use("/experience", experienceRoutes);
 router.use("/education", educationRoutes);
 router.use("/sections", sectionRoutes);
+router.use("/uploads", uploadRoutes);
 
 export default router;

@@ -1,4 +1,4 @@
-export default function HeroSection({ content, typed, scrollTo, dark, accent, muted, card }) {
+export default function HeroSection({ content, typed, scrollTo, accent, muted, card }) {
   const [firstName, ...restName] = content.name.split(" ");
   const lastName = restName.join(" ");
 
@@ -52,7 +52,7 @@ export default function HeroSection({ content, typed, scrollTo, dark, accent, mu
               )}
               <button
                 onClick={() => scrollTo("Contact")}
-                className={`px-6 py-3 rounded-sm text-sm tracking-widest border ${dark ? "border-[#333] hover:border-[#555]" : "border-[#ccc] hover:border-[#999]"} transition-all hover:scale-105`}
+                className="px-6 py-3 rounded-sm text-sm tracking-widest border border-[color:var(--t-card-border)] hover:border-[color:var(--t-muted)] transition-all hover:scale-105"
               >
                 Contact Me
               </button>
@@ -61,8 +61,8 @@ export default function HeroSection({ content, typed, scrollTo, dark, accent, mu
           {/* Avatar card */}
           <div className="flex-shrink-0">
             <div
-              className={`relative w-64 h-64 sm:w-80 sm:h-80 rounded-2xl border ${dark ? "border-[#2a2a2a]" : "border-[#ddd]"} flex items-center justify-center overflow-hidden`}
-              style={{ background: dark ? "#111" : "#ece8e0" }}
+              className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-2xl border border-[color:var(--t-card-border)] flex items-center justify-center overflow-hidden"
+              style={{ background: "var(--t-card)" }}
             >
               <div className="text-center">
                 <div className="text-8xl mb-4">{content.avatarEmoji}</div>

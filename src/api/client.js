@@ -20,9 +20,28 @@ async function request(path, { method = "GET", body, csrfToken } = {}) {
   return json;
 }
 
+// Multipart upload — no Content-Type header so the browser sets the boundary itself.
+async function uploadRequest(path, formData, csrfToken) {
+  const res = await fetch(`${BASE_URL}${path}`, {
+    method: "POST",
+    headers: csrfToken ? { "X-CSRF-Token": csrfToken } : {},
+    credentials: "include",
+    body: formData,
+  });
+
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const error = new Error(json?.error?.message || `Upload failed (${res.status})`);
+    error.status = res.status;
+    throw error;
+  }
+  return json;
+}
+
 export const api = {
   get: (path) => request(path),
   post: (path, body, csrfToken) => request(path, { method: "POST", body, csrfToken }),
   patch: (path, body, csrfToken) => request(path, { method: "PATCH", body, csrfToken }),
   del: (path, csrfToken) => request(path, { method: "DELETE", csrfToken }),
+  upload: (path, formData, csrfToken) => uploadRequest(path, formData, csrfToken),
 };

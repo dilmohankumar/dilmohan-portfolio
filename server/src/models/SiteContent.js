@@ -1,5 +1,40 @@
 import mongoose from "mongoose";
 
+const HEX_COLOR = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+
+// One palette per mode (dark/light) so admins can restyle both looks independently.
+const palette = (defaults) =>
+  new mongoose.Schema(
+    {
+      bg: { type: String, trim: true, match: HEX_COLOR, default: defaults.bg },
+      text: { type: String, trim: true, match: HEX_COLOR, default: defaults.text },
+      card: { type: String, trim: true, match: HEX_COLOR, default: defaults.card },
+      cardBorder: { type: String, trim: true, match: HEX_COLOR, default: defaults.cardBorder },
+      muted: { type: String, trim: true, match: HEX_COLOR, default: defaults.muted },
+    },
+    { _id: false }
+  );
+
+const themeSchema = new mongoose.Schema(
+  {
+    // Name of the preset this palette started from — "custom" once colors are hand-edited.
+    preset: { type: String, trim: true, maxlength: 30, default: "Classic Emerald" },
+    font: { type: String, enum: ["mono", "sans", "serif"], default: "mono" },
+    dark: {
+      type: palette({ bg: "#0d0d0d", text: "#e8e0d0", card: "#181818", cardBorder: "#2a2a2a", muted: "#888888" }),
+      default: () => ({}),
+    },
+    light: {
+      type: palette({ bg: "#f4f1eb", text: "#1a1a1a", card: "#ffffff", cardBorder: "#e0dbd0", muted: "#666666" }),
+      default: () => ({}),
+    },
+    // URL (uploaded or external) rendered behind the whole page, dimmed by backgroundOverlay.
+    backgroundImage: { type: String, trim: true, maxlength: 500, default: "" },
+    backgroundOverlay: { type: Number, min: 0, max: 1, default: 0.85 },
+  },
+  { _id: false }
+);
+
 const statSchema = new mongoose.Schema(
   {
     value: { type: String, required: true, trim: true, maxlength: 10 },
@@ -41,6 +76,7 @@ const siteContentSchema = new mongoose.Schema(
     },
     logoText: { type: String, trim: true, maxlength: 20, default: "DK." },
     navLinks: [navLinkSchema],
+    theme: { type: themeSchema, default: () => ({}) },
 
     stats: [statSchema],
     skills: [{ type: String, trim: true, maxlength: 40 }],

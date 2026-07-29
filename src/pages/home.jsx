@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import { useHomeContent } from "../hooks/useHomeContent";
-import { ACCENT, getThemeClasses } from "../constants/theme";
+import { ACCENT, FONT_CLASSES, PUBLIC_THEME_CLASSES, buildThemeStyle, getThemeClasses, mergeTheme } from "../constants/theme";
 import { SECTION_RENDERERS } from "../components/sections";
 
 const DEFAULT_NAV_LINKS = [
@@ -72,9 +72,14 @@ export default function Portfolio() {
     return () => window.removeEventListener("scroll", handler);
   }, [navLinks]);
 
-  const { bg, text, card, muted, navBg } = getThemeClasses(dark);
+  // Neutral classes for the loading/error states (theme isn't known yet);
+  // the real render below is styled entirely from the owner's saved theme.
+  const { bg, text, muted } = getThemeClasses(dark);
   const accent = content?.accentColor || ACCENT;
   const logoText = content?.logoText || "DK.";
+  const theme = mergeTheme(content?.theme);
+  const themeStyle = buildThemeStyle(theme, accent, dark);
+  const t = PUBLIC_THEME_CLASSES;
 
   const scrollTo = (id) => {
     document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
@@ -112,15 +117,15 @@ export default function Portfolio() {
     );
   }
 
-  const sharedSectionProps = { dark, accent, muted, card };
+  const sharedSectionProps = { dark, accent, muted: t.muted, card: t.card };
   const orderedSections = (sections || [])
     .filter((s) => s.visible)
     .sort((a, b) => a.order - b.order);
 
   return (
-    <div className={`${bg} ${text} min-h-screen font-mono transition-colors duration-500`}>
+    <div className={`${t.bg} ${t.text} min-h-screen ${FONT_CLASSES[theme.font] || "font-mono"} transition-colors duration-500`} style={themeStyle}>
       {/* NAV */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 ${navBg} backdrop-blur border-b ${dark ? "border-[#1e1e1e]" : "border-[#ddd]"}`}>
+      <nav className={`fixed top-0 left-0 right-0 z-50 ${t.navBg} backdrop-blur border-b ${t.border}`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
           <span className="text-xl font-bold tracking-widest" style={{ color: accent }}>
             {logoText.length > 1 ? logoText.slice(0, -1) : logoText}
@@ -132,16 +137,16 @@ export default function Portfolio() {
               <button
                 key={l.target}
                 onClick={() => scrollTo(l.target)}
-                className={`text-sm tracking-widest uppercase transition-colors hover:text-[#00c896] ${activeSection === l.target ? "text-[#00c896]" : muted}`}
+                className={`text-sm tracking-widest uppercase transition-colors hover:text-[color:var(--t-accent)] ${activeSection === l.target ? "text-[color:var(--t-accent)]" : t.muted}`}
               >
                 {l.label}
               </button>
             ))}
-            <AdminNavItem muted={muted} />
+            <AdminNavItem muted={t.muted} />
             <button
               onClick={toggleDark}
               className="ml-4 w-12 h-6 rounded-full relative transition-colors duration-300"
-              style={{ backgroundColor: dark ? "#00c896" : "#ccc" }}
+              style={{ backgroundColor: dark ? accent : "#ccc" }}
             >
               <span
                 className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-300"
@@ -151,10 +156,10 @@ export default function Portfolio() {
           </div>
           {/* Mobile */}
           <div className="flex md:hidden items-center gap-3">
-            <button onClick={toggleDark} className="w-10 h-5 rounded-full relative" style={{ backgroundColor: dark ? "#00c896" : "#ccc" }}>
+            <button onClick={toggleDark} className="w-10 h-5 rounded-full relative" style={{ backgroundColor: dark ? accent : "#ccc" }}>
               <span className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-300" style={{ left: dark ? "22px" : "2px" }} />
             </button>
-            <button onClick={() => setMenuOpen(!menuOpen)} className={`${muted} hover:text-[#00c896] p-1`}>
+            <button onClick={() => setMenuOpen(!menuOpen)} className={`${t.muted} hover:text-[color:var(--t-accent)] p-1`}>
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {menuOpen ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /> : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />}
               </svg>
@@ -162,11 +167,11 @@ export default function Portfolio() {
           </div>
         </div>
         {menuOpen && (
-          <div className={`md:hidden ${dark ? "bg-[#111]" : "bg-white"} border-t ${dark ? "border-[#1e1e1e]" : "border-[#eee]"} px-6 py-4 flex flex-col gap-4`}>
+          <div className={`md:hidden bg-[color:var(--t-card)] border-t ${t.border} px-6 py-4 flex flex-col gap-4`}>
             {navLinks.map((l) => (
-              <button key={l.target} onClick={() => scrollTo(l.target)} className={`text-left text-sm tracking-widest uppercase ${activeSection === l.target ? "text-[#00c896]" : muted}`}>{l.label}</button>
+              <button key={l.target} onClick={() => scrollTo(l.target)} className={`text-left text-sm tracking-widest uppercase ${activeSection === l.target ? "text-[color:var(--t-accent)]" : t.muted}`}>{l.label}</button>
             ))}
-            <AdminNavItem muted={muted} mobile onNavigate={() => setMenuOpen(false)} />
+            <AdminNavItem muted={t.muted} mobile onNavigate={() => setMenuOpen(false)} />
           </div>
         )}
       </nav>
@@ -199,8 +204,8 @@ export default function Portfolio() {
       })}
 
       {/* FOOTER */}
-      <footer className={`py-6 border-t text-center ${dark ? "border-[#1a1a1a]" : "border-[#e8e4dc]"}`}>
-        <p className={`text-xs ${muted} tracking-widest`}>© 2026 {content.name.toUpperCase()}</p>
+      <footer className={`py-6 border-t text-center ${t.border}`}>
+        <p className={`text-xs ${t.muted} tracking-widest`}>© 2026 {content.name.toUpperCase()}</p>
       </footer>
     </div>
   );
@@ -209,7 +214,7 @@ export default function Portfolio() {
 function AdminNavItem({ muted, mobile, onNavigate }) {
   const base = `${mobile ? "text-left" : ""} text-sm tracking-widest uppercase`;
   return (
-    <Link to="/admin" onClick={onNavigate} className={`${base} transition-colors hover:text-[#00c896] ${muted}`}>
+    <Link to="/admin" onClick={onNavigate} className={`${base} transition-colors hover:text-[color:var(--t-accent)] ${muted}`}>
       Admin
     </Link>
   );

@@ -1,8 +1,8 @@
 import SectionLabel from "./SectionLabel";
 
-export default function ContactSection({ section, content, dark, accent, muted }) {
+export default function ContactSection({ section, content, accent, muted }) {
   return (
-    <section id="contact" className={`py-20 border-t ${dark ? "border-[#1a1a1a]" : "border-[#e8e4dc]"}`}>
+    <section id="contact" className="py-20 border-t border-[color:var(--t-border)]">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
         <SectionLabel accent={accent}>{section.title}</SectionLabel>
         <h2 className="text-3xl sm:text-4xl font-bold mt-6 mb-4">Let's Work Together</h2>
@@ -20,7 +20,7 @@ export default function ContactSection({ section, content, dark, accent, muted }
           {content.contact?.phone && (
             <a
               href={`tel:${content.contact.phone.replace(/\s+/g, "")}`}
-              className={`flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-sm tracking-wide border transition-all hover:scale-105 ${dark ? "border-[#333] hover:border-[#00c896]" : "border-[#ccc] hover:border-[#00c896]"}`}
+              className="flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-sm tracking-wide border transition-all hover:scale-105 border-[color:var(--t-card-border)] hover:border-[color:var(--t-accent)]"
             >
               📞 {content.contact.phone}
             </a>
@@ -28,12 +28,12 @@ export default function ContactSection({ section, content, dark, accent, muted }
         </div>
         <div className="flex justify-center gap-6 mt-8">
           {content.contact?.github && (
-            <a href={content.contact.github} target="_blank" rel="noreferrer" className={`${muted} hover:text-[#00c896] text-sm transition-colors`}>
+            <a href={content.contact.github} target="_blank" rel="noreferrer" className={`${muted} hover:text-[color:var(--t-accent)] text-sm transition-colors`}>
               GitHub ↗
             </a>
           )}
           {content.contact?.linkedin && (
-            <a href={content.contact.linkedin} target="_blank" rel="noreferrer" className={`${muted} hover:text-[#00c896] text-sm transition-colors`}>
+            <a href={content.contact.linkedin} target="_blank" rel="noreferrer" className={`${muted} hover:text-[color:var(--t-accent)] text-sm transition-colors`}>
               LinkedIn ↗
             </a>
           )}

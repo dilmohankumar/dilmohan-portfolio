@@ -18,6 +18,7 @@ const CONTENT_FIELDS = [
   "accentColor",
   "logoText",
   "navLinks",
+  "theme",
   "stats",
   "skills",
   "certifications",

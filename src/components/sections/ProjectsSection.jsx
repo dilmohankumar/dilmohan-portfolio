@@ -1,20 +1,20 @@
 import SectionLabel from "./SectionLabel";
 
-export default function ProjectsSection({ section, projects, dark, accent, muted, card }) {
+export default function ProjectsSection({ section, projects, accent, muted, card }) {
   if (!projects?.length) return null;
 
   return (
-    <section id="projects" className={`py-20 border-t ${dark ? "border-[#1a1a1a]" : "border-[#e8e4dc]"}`}>
+    <section id="projects" className="py-20 border-t border-[color:var(--t-border)]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <SectionLabel accent={accent}>{section.title}</SectionLabel>
         <div className="grid sm:grid-cols-2 gap-8 mt-10">
           {projects.map((p) => (
             <div
               key={p._id}
-              className={`${card} border rounded-2xl p-6 hover:border-[#00c896] transition-all hover:-translate-y-1 duration-300 group`}
+              className={`${card} border rounded-2xl p-6 hover:border-[color:var(--t-accent)] transition-all hover:-translate-y-1 duration-300 group`}
             >
               <div className="text-5xl mb-5">{p.emoji}</div>
-              <h3 className="text-base sm:text-lg font-bold mb-3 group-hover:text-[#00c896] transition-colors">{p.name}</h3>
+              <h3 className="text-base sm:text-lg font-bold mb-3 group-hover:text-[color:var(--t-accent)] transition-colors">{p.name}</h3>
               <p className={`text-sm ${muted} mb-5 leading-relaxed`}>{p.desc}</p>
               <div className="flex flex-wrap gap-2">
                 {p.tech?.map((t) => (

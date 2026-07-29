@@ -4,7 +4,7 @@ function CardsLayout({ items, muted, card }) {
   return (
     <div className="grid sm:grid-cols-2 gap-8 mt-10">
       {items.map((item, i) => (
-        <div key={i} className={`${card} border rounded-2xl p-6 hover:border-[#00c896] transition-all hover:-translate-y-1 duration-300`}>
+        <div key={i} className={`${card} border rounded-2xl p-6 hover:border-[color:var(--t-accent)] transition-all hover:-translate-y-1 duration-300`}>
           {item.emoji && <div className="text-5xl mb-5">{item.emoji}</div>}
           {item.heading && <h3 className="text-base sm:text-lg font-bold mb-3">{item.heading}</h3>}
           {item.description && <p className={`text-sm ${muted} leading-relaxed`}>{item.description}</p>}
@@ -29,7 +29,7 @@ function ListLayout({ items, accent, card }) {
   );
 }
 
-function LinksLayout({ items, accent, dark }) {
+function LinksLayout({ items, accent }) {
   return (
     <div className="flex flex-wrap gap-4 mt-10">
       {items.map((item, i) =>
@@ -47,7 +47,7 @@ function LinksLayout({ items, accent, dark }) {
         ) : (
           <span
             key={i}
-            className={`px-6 py-3 rounded-sm text-sm tracking-widest border ${dark ? "border-[#333]" : "border-[#ccc]"}`}
+            className="px-6 py-3 rounded-sm text-sm tracking-widest border border-[color:var(--t-card-border)]"
           >
             {item.label}
           </span>
@@ -57,17 +57,17 @@ function LinksLayout({ items, accent, dark }) {
   );
 }
 
-export default function CustomSection({ section, dark, accent, muted, card }) {
+export default function CustomSection({ section, accent, muted, card }) {
   if (!section.items?.length) return null;
 
   const layout = section.layout || "cards";
 
   return (
-    <section className={`py-20 border-t ${dark ? "border-[#1a1a1a]" : "border-[#e8e4dc]"}`}>
+    <section className="py-20 border-t border-[color:var(--t-border)]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <SectionLabel accent={accent}>{section.title}</SectionLabel>
         {layout === "list" && <ListLayout items={section.items} accent={accent} card={card} />}
-        {layout === "links" && <LinksLayout items={section.items} accent={accent} dark={dark} />}
+        {layout === "links" && <LinksLayout items={section.items} accent={accent} />}
         {layout === "cards" && <CardsLayout items={section.items} accent={accent} muted={muted} card={card} />}
       </div>
     </section>
